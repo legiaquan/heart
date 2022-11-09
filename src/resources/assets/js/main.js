@@ -112,23 +112,100 @@
 //   renderer.render(scene, camera);
 // }
 
+const elts = {
+  text1: document.getElementById("text1"),
+  text2: document.getElementById("text2"),
+};
+
+const texts = ["Love", "Miu", "3000", "🧡🧡🧡"];
+
+const morphTime = 1;
+const cooldownTime = 0.25;
+
+let textIndex = texts.length - 1;
+let time = new Date();
+let morph = 0;
+let cooldown = cooldownTime;
+
+elts.text1.textContent = texts[textIndex % texts.length];
+elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+
+function doMorph() {
+  morph -= cooldown;
+  cooldown = 0;
+
+  let fraction = morph / morphTime;
+
+  if (fraction > 1) {
+    cooldown = cooldownTime;
+    fraction = 1;
+  }
+
+  setMorph(fraction);
+}
+
+function setMorph(fraction) {
+  elts.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+  elts.text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+  fraction = 1 - fraction;
+  elts.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+  elts.text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+  elts.text1.textContent = texts[textIndex % texts.length];
+  elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+}
+
+function doCooldown() {
+  morph = 0;
+
+  elts.text2.style.filter = "";
+  elts.text2.style.opacity = "100%";
+
+  elts.text1.style.filter = "";
+  elts.text1.style.opacity = "0%";
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  let newTime = new Date();
+  let shouldIncrementIndex = cooldown > 0;
+  let dt = (newTime - time) / 1000;
+  time = newTime;
+
+  cooldown -= dt;
+
+  if (cooldown <= 0) {
+    if (shouldIncrementIndex) {
+      textIndex++;
+    }
+
+    doMorph();
+  } else {
+    doCooldown();
+  }
+}
+
+animate();
+
 var settings = {
-    color: 'hsla(330, 100%, 80%, 0.5)',
-    color2: 'rgba(255, 180, 210, 1)',
-    particles: {
-      length: 5000, // maximum amount of particles
-      duration: 3, // particle duration in sec
-      velocity: 2, // particle velocity in pixels/sec
-      effect: 8, // play with this for a nice effect
-      size: 8, // particle size in pixels
-    },
-    particles2: {
-      length:   5000, // maximum amount of particles
-      duration:  2.5, // particle duration in sec
-      velocity: 50, // particle velocity in pixels/sec
-      effect: -1.3, // play with this for a nice effect
-      size:      8, // particle size in pixels
-    },
+  color: "hsla(330, 100%, 80%, 0.5)",
+  color2: "rgba(255, 180, 210, 1)",
+  particles: {
+    length: 5000, // maximum amount of particles
+    duration: 3, // particle duration in sec
+    velocity: 2, // particle velocity in pixels/sec
+    effect: 8, // play with this for a nice effect
+    size: 8, // particle size in pixels
+  },
+  particles2: {
+    length: 5000, // maximum amount of particles
+    duration: 2.5, // particle duration in sec
+    velocity: 50, // particle velocity in pixels/sec
+    effect: -1.3, // play with this for a nice effect
+    size: 8, // particle size in pixels
+  },
 };
 /*
  */
@@ -239,8 +316,7 @@ var ParticlePool = (function () {
   function ParticlePool(length) {
     // create and populate particle pool
     particles = new Array(length);
-    for (var i = 0; i < particles.length; i++)
-      particles[i] = new Particle();
+    for (var i = 0; i < particles.length; i++) particles[i] = new Particle();
   }
   ParticlePool.prototype.add = function (x, y, dx, dy) {
     particles[firstFree].initialize(x, y, dx, dy);
@@ -256,8 +332,7 @@ var ParticlePool = (function () {
 
     // update active particles
     if (firstActive < firstFree) {
-      for (i = firstActive; i < firstFree; i++)
-        particles[i].update(deltaTime);
+      for (i = firstActive; i < firstFree; i++) particles[i].update(deltaTime);
     }
     if (firstFree < firstActive) {
       for (i = firstActive; i < particles.length; i++)
@@ -266,10 +341,7 @@ var ParticlePool = (function () {
     }
 
     // remove inactive particles
-    while (
-      particles[firstActive].age >= duration &&
-      firstActive != firstFree
-    ) {
+    while (particles[firstActive].age >= duration && firstActive != firstFree) {
       firstActive++;
       if (firstActive == particles.length) firstActive = 0;
     }
@@ -294,8 +366,7 @@ var ParticlePool = (function () {
 (function (canvas) {
   var context = canvas.getContext("2d"),
     particles = new ParticlePool(settings.particles.length),
-    particleRate =
-      settings.particles.length / settings.particles.duration, // particles/sec
+    particleRate = settings.particles.length / settings.particles.duration, // particles/sec
     time;
 
   // get point on heart with -PI <= t <= PI
@@ -320,11 +391,9 @@ var ParticlePool = (function () {
     function to(t) {
       var point = pointOnHeart(t);
       point.x =
-        settings.particles.size / 2 +
-        (point.x * settings.particles.size) / 350;
+        settings.particles.size / 2 + (point.x * settings.particles.size) / 350;
       point.y =
-        settings.particles.size / 2 -
-        (point.y * settings.particles.size) / 350;
+        settings.particles.size / 2 - (point.y * settings.particles.size) / 350;
       return point;
     }
     // create the path
@@ -463,8 +532,7 @@ var ParticlePoolSecond = (function () {
 
     // update active particles
     if (firstActive < firstFree) {
-      for (i = firstActive; i < firstFree; i++)
-        particles[i].update(deltaTime);
+      for (i = firstActive; i < firstFree; i++) particles[i].update(deltaTime);
     }
     if (firstFree < firstActive) {
       for (i = firstActive; i < particles.length; i++)
@@ -473,10 +541,7 @@ var ParticlePoolSecond = (function () {
     }
 
     // remove inactive particles
-    while (
-      particles[firstActive].age >= duration &&
-      firstActive != firstFree
-    ) {
+    while (particles[firstActive].age >= duration && firstActive != firstFree) {
       firstActive++;
       if (firstActive == particles.length) firstActive = 0;
     }
@@ -499,8 +564,7 @@ var ParticlePoolSecond = (function () {
 (function (canvas) {
   var context = canvas.getContext("2d"),
     particles = new ParticlePoolSecond(settings.particles2.length),
-    particleRate =
-      settings.particles2.length / settings.particles2.duration, // particles/sec
+    particleRate = settings.particles2.length / settings.particles2.duration, // particles/sec
     time;
 
   // get point on heart with -PI <= t <= PI

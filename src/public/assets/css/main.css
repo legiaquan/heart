@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:900&display=swap");
+
 body {
 	display: flex;
 	justify-content: center;
@@ -5,9 +7,17 @@ body {
 	background: #000;
 }
 
-.test {
-	color: rgba(255, 0, 98, 0.733);
+#text1,
+#text2 {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%, -30%);
+	color: rgb(255, 192, 203);
+	font-family: "Raleway", sans-serif;
+	font-size: 35pt;
 }
+
 
 .box {
 	width: 1000px;
@@ -59,6 +69,15 @@ body {
 	left: 0;
 	transform: rotate(45deg);
 	transform-origin: 100% 100%;
+}
+
+@media only screen and (max-width: 767px) {
+	#text1,
+	#text2 {
+		top: 38%;
+		left: 50%;
+		transform: translate(-50%, -38%);
+	}
 }
 
 @keyframes animate {
