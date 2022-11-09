@@ -2,7 +2,11 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: rgb(0 0 0 / 0);
+	background: #000;
+}
+
+.test {
+	color: rgba(255, 0, 98, 0.733);
 }
 
 .box {
@@ -16,14 +20,22 @@ body {
 }
 
 #pinkboard {
-	position: fixed;
+	position: relative;
+	margin: auto;
+	height: 750px;
+	width: 750px;
+}
+
+#pinkboard2 {
+	position: absolute;
 	margin: auto;
 	height: 750px;
 	width: 750px;
 	animation: animate 1.5s infinite;
 }
 
-#pinkboard:before, #pinkboard:after {
+#pinkboard:before, #pinkboard:after,
+#pinkboard2:before, #pinkboard2:after {
 	content: '';
 	position: absolute;
 	background: #d63031;
@@ -33,7 +45,8 @@ body {
 	border-top-right-radius: 50px;
 }
 
-#pinkboard:before {
+#pinkboard:before,
+#pinkboard2:before {
 	left: 100px;
 	transform: rotate(-45deg);
 	transform-origin: 0 100%;
@@ -41,7 +54,8 @@ body {
 				0 10px 10px rgba(0,0,0,0.22);
 }
 
-#pinkboard:after {
+#pinkboard:after,
+#pinkboard2:after {
 	left: 0;
 	transform: rotate(45deg);
 	transform-origin: 100% 100%;
@@ -49,12 +63,12 @@ body {
 
 @keyframes animate {
 	0% {
-		transform: scale(1);
+		transform: scale(0.95);
 	}
 	50% {
-		transform: scale(.8);
+		transform: scale(0.88);
 	}
 	100% {
-		transform: scale(1);
+		transform: scale(0.95);
 	}
 }
